@@ -12,11 +12,11 @@ public class ContactBookUI extends JFrame {
         setTitle("Contact Book");
         setSize(400, 300);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // ✅ Center the window on screen
+        setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5); // spacing
+        gbc.insets = new Insets(5, 5, 5, 5);
 
         JTextField nameField = new JTextField(20);
         JTextField phoneField = new JTextField(20);
@@ -45,12 +45,28 @@ public class ContactBookUI extends JFrame {
         gbc.gridy = 4;
         panel.add(viewBtn, gbc);
 
-        add(panel); // Add panel to frame
+        add(panel);
 
-        // Button actions
         addBtn.addActionListener(e -> {
+            String name = nameField.getText().trim();
+            String phone = phoneField.getText().trim();
+            String email = emailField.getText().trim();
+
+            if (!name.matches("[A-Za-z ]{2,50}")) {
+                JOptionPane.showMessageDialog(this, "Invalid name. Use letters only.");
+                return;
+            }
+            if (!phone.matches("\\d{10}")) {
+                JOptionPane.showMessageDialog(this, "Invalid phone number. Use exactly 10 digits.");
+                return;
+            }
+            if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,6}$")) {
+                JOptionPane.showMessageDialog(this, "Invalid email format.");
+                return;
+            }
+
             try {
-                Contact c = new Contact(nameField.getText(), phoneField.getText(), emailField.getText());
+                Contact c = new Contact(name, phone, email);
                 dao.addContact(c);
                 JOptionPane.showMessageDialog(this, "Contact added!");
             } catch (Exception ex) {
